@@ -388,7 +388,7 @@ class Bubble(SVGMobject):
 
 class SpeechBubble(Bubble):
     CONFIG = {
-        "file_name": "Bubbles_speech.svg",
+        "file_name": "111312_99031275113.svg",
         "height": 4
     }
 

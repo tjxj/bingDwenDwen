@@ -1,5 +1,5 @@
 from manimlib import *
-# import scipy
+import scipy
 
 
 class FourierCirclesScene(Scene):
@@ -18,16 +18,17 @@ class FourierCirclesScene(Scene):
         "vector_config": {
             "buff": 0,
             "max_tip_length_to_length_ratio": 0.35,
-            "fill_opacity": 0.75,
+            "tip_length": 0.15,
+            "max_stroke_width_to_length_ratio": 10,
+            "stroke_width": 2,
         },
         "circle_config": {
             "stroke_width": 1,
-            "stroke_opacity": 0.75,
         },
         "base_frequency": 1,
         "slow_factor": 0.25,
         "center_point": ORIGIN,
-        "parametric_function_step_size": 0.01,
+        "parametric_function_step_size": 0.001,
         "drawn_path_color": YELLOW,
         "drawn_path_stroke_width": 2,
     }
@@ -143,7 +144,9 @@ class FourierCirclesScene(Scene):
 
         path = ParametricCurve(
             lambda t: center + reduce(op.add, [
-                complex_to_R3(coef * np.exp(TAU * 1j * freq * t))
+                complex_to_R3(
+                    coef * np.exp(TAU * 1j * freq * t)
+                )
                 for coef, freq in zip(coefs, freqs)
             ]),
             t_min=0,
@@ -189,7 +192,7 @@ class FourierCirclesScene(Scene):
                              n_copies=2,
                              right_shift_rate=5):
         path = self.get_vector_sum_path(vectors)
-        wave = ParametricCurve(
+        wave = ParametricFunction(
             lambda t: op.add(
                 right_shift_rate * t * LEFT,
                 path.function(t)[1] * UP
@@ -328,8 +331,6 @@ class FourierOfPiSymbol(FourierCirclesScene):
     def add_vectors_circles_path(self):
         path = self.get_path()
         coefs = self.get_coefficients_of_path(path)
-        for coef in coefs:
-            print(coef)
         vectors = self.get_rotating_vectors(coefficients=coefs)
         circles = self.get_circles(vectors)
         self.set_decreasing_stroke_widths(circles)
@@ -363,7 +364,7 @@ class FourierOfPiSymbol(FourierCirclesScene):
         return circles
 
     def get_path(self):
-        tex_mob = Tex(self.tex)
+        tex_mob = TexMobject(self.tex)
         tex_mob.set_height(6)
         path = tex_mob.family_members_with_points()[0]
         path.set_fill(opacity=0)
@@ -378,11 +379,11 @@ class FourierOfTexPaths(FourierOfPiSymbol, CameraFrame):
         "animated_name": "Abc",
         "time_per_symbol": 5,
         "slow_factor": 1 / 5,
-        "parametric_function_step_size": 0.001,
+        "parametric_function_step_size": 0.01,
     }
 
     def construct(self):
-        name = TexText(self.animated_name)
+        name = TextMobject(self.animated_name)
         max_width = FRAME_WIDTH - 2
         max_height = FRAME_HEIGHT - 2
         name.set_width(max_width)
@@ -392,31 +393,28 @@ class FourierOfTexPaths(FourierOfPiSymbol, CameraFrame):
         frame = self.camera.frame
         frame.save_state()
 
-        vectors = None
-        circles = None
+        vectors = VGroup(VectorizedPoint())
+        circles = VGroup(VectorizedPoint())
         for path in name.family_members_with_points():
             for subpath in path.get_subpaths():
                 sp_mob = VMobject()
                 sp_mob.set_points(subpath)
-                sp_mob.set_color("#2561d9")
                 coefs = self.get_coefficients_of_path(sp_mob)
-                new_vectors = self.get_rotating_vectors(coefficients=coefs)
+                new_vectors = self.get_rotating_vectors(
+                    coefficients=coefs
+                )
                 new_circles = self.get_circles(new_vectors)
                 self.set_decreasing_stroke_widths(new_circles)
 
                 drawn_path = self.get_drawn_path(new_vectors)
                 drawn_path.clear_updaters()
                 drawn_path.set_stroke(self.name_color, 3)
-                drawn_path.set_fill(opacity=0)
 
                 static_vectors = VMobject().become(new_vectors)
                 static_circles = VMobject().become(new_circles)
-
-                if vectors is None:
-                    vectors = static_vectors.copy()
-                    circles = static_circles.copy()
-                    vectors.scale(0)
-                    circles.scale(0)
+                # static_circles = new_circles.deepcopy()
+                # static_vectors.clear_updaters()
+                # static_circles.clear_updaters()
 
                 self.play(
                     Transform(vectors, static_vectors, remover=True),
@@ -425,7 +423,7 @@ class FourierOfTexPaths(FourierOfPiSymbol, CameraFrame):
                     frame.move_to, path,
                 )
 
-                self.add(drawn_path, new_vectors, new_circles)
+                self.add(new_vectors, new_circles)
                 self.vector_clock.set_value(0)
                 self.play(
                     ShowCreation(drawn_path),
@@ -514,7 +512,7 @@ class FourierOfN(FourierOfTrebleClef):
     }
 
     def get_shape(self):
-        return Tex("N")
+        return TexMobject("N")
 
 
 class FourierNailAndGear(FourierOfTrebleClef):
@@ -586,7 +584,7 @@ class FourierNDQ(FourierOfTrebleClef):
 
     def get_shape(self):
         path = VMobject()
-        shape = Tex("NDQ")
+        shape = TexMobject("NDQ")
         for sp in shape.family_members_with_points():
             path.append_points(sp.points)
         return path
@@ -699,7 +697,7 @@ class ExplainCircleAnimations(FourierCirclesScene):
             ct.circle.number = number
 
         ld, rd = [
-            Tex("\\dots")
+            TexMobject("\\dots")
             for x in range(2)
         ]
         ld.next_to(freq_numbers, LEFT, MED_LARGE_BUFF)
@@ -707,7 +705,7 @@ class ExplainCircleAnimations(FourierCirclesScene):
         freq_numbers.add_to_back(ld)
         freq_numbers.add(rd)
 
-        freq_word = TexText("Frequencies")
+        freq_word = TextMobject("Frequencies")
         freq_word.scale(1.5)
         freq_word.set_color(YELLOW)
         freq_word.next_to(freq_numbers, DOWN, MED_LARGE_BUFF)
@@ -919,7 +917,7 @@ class ExplainCircleAnimations(FourierCirclesScene):
         return path
 
     def get_path(self):
-        tex = Tex("f")
+        tex = TexMobject("f")
         path = tex.family_members_with_points()[0]
         self.configure_path(path)
         return path
@@ -931,20 +929,3 @@ class ExplainCircleAnimations(FourierCirclesScene):
         self.configure_path(path)
         path.scale(1.5, about_edge=DOWN)
         return path
-
-
-class FourierOctocat(FourierOfTrebleClef):
-    CONFIG = {
-        "height": 4,
-        "n_vectors": 200,
-        "run_time": 10,
-        "arrow_config": {
-            "tip_length": 0.1,
-            "stroke_width": 2,
-        }
-    }
-
-    def get_shape(self):
-        shape = SVGMobject(
-            "/Users/huhaiyang/projs/bingDwenDwen/manim/assets/svg_images/Bing.svg")
-        return shape

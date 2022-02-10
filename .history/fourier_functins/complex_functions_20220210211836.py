@@ -6,7 +6,7 @@ sys.path.append(rootPath)
 
 from manimlib import *
 
-from custom.backdrops import *
+from .custom.backdrops import *
 from custom.banner import *
 from custom.characters.pi_creature import *
 from custom.characters.pi_creature_animations import *

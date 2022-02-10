@@ -1,12 +1,6 @@
-import sys
-import os
-curPath = os.path.abspath(os.path.dirname(__file__))
-rootPath = os.path.split(curPath)[0]
-sys.path.append(rootPath)
-
 from manimlib import *
 
-from custom.backdrops import *
+from fourier_functins.custom.backdrops import *
 from custom.banner import *
 from custom.characters.pi_creature import *
 from custom.characters.pi_creature_animations import *

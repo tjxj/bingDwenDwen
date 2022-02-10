@@ -526,7 +526,7 @@ class FourierNailAndGear(FourierOfTrebleClef):
         "parametric_function_step_size": 0.0001,
         "arrow_config": {
             "tip_length": 0.1,
-            "stroke_width": 2,
+            "stroke_width": 1,
         }
     }
 
@@ -542,7 +542,7 @@ class FourierBatman(FourierOfTrebleClef):
         "run_time": 10,
         "arrow_config": {
             "tip_length": 0.1,
-            "stroke_width": 2,
+            "stroke_width": 1,
         }
     }
 
@@ -558,7 +558,7 @@ class FourierHeart(FourierOfTrebleClef):
         "run_time": 10,
         "arrow_config": {
             "tip_length": 0.1,
-            "stroke_width": 2,
+            "stroke_width": 1,
         }
     }
 
@@ -580,7 +580,7 @@ class FourierNDQ(FourierOfTrebleClef):
         "run_time": 10,
         "arrow_config": {
             "tip_length": 0.1,
-            "stroke_width": 2,
+            "stroke_width": 1,
         }
     }
 
@@ -940,7 +940,7 @@ class FourierOctocat(FourierOfTrebleClef):
         "run_time": 10,
         "arrow_config": {
             "tip_length": 0.1,
-            "stroke_width": 2,
+            "stroke_width": 1,
         }
     }
 

@@ -1,4 +1,4 @@
-from manim_imports_ext import *
+from manimlib import *
 
 
 class WhyWouldYouCare(TeacherStudentsScene):

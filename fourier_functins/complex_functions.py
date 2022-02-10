@@ -1,5 +1,4 @@
-from manim_imports_ext import *
-
+from manimlib import *
 
 class GeneralizeToComplexFunctions(Scene):
     CONFIG = {

@@ -1,4 +1,6 @@
 from manimlib import *
+from fourier_functins.pi_creature import Randolph
+
 
 class GeneralizeToComplexFunctions(Scene):
     CONFIG = {
@@ -33,10 +35,8 @@ class GeneralizeToComplexFunctions(Scene):
         axes = Axes(**self.axes_config)
         axes.shift(2 * LEFT - axes.c2p(0, 0))
         y_axis = axes.y_axis
-        y_labels = y_axis.get_number_mobjects(
-            *range(-2, 3),
-            num_decimal_places=1
-        )
+        y_labels = y_axis.add_numbers(x_values=None, excluding=None
+                                      )
 
         t_tracker = ValueTracker(0)
         t_tracker.add_updater(lambda t, dt: t.increment_value(dt))
@@ -245,7 +245,7 @@ class GeneralizeToComplexFunctions(Scene):
     #
     def get_complex_plane(self):
         plane = ComplexPlane(**self.complex_plane_config)
-        plane.add_coordinates()
+        plane.add_coordinate_labels()
 
         plane.label = TexText("Complex plane")
         plane.label.scale(1.5)

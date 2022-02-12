@@ -1,24 +1,4 @@
-import sys
-import os
-curPath = os.path.abspath(os.path.dirname(__file__))
-rootPath = os.path.split(curPath)[0]
-sys.path.append(rootPath)
-
 from manimlib import *
-from fourier_functins.pi_creature import Randolph
-
-
-from custom.backdrops import *
-from custom.banner import *
-from custom.characters.pi_creature import *
-from custom.characters.pi_creature_animations import *
-from custom.characters.pi_creature_scene import *
-from custom.deprecated import *
-from custom.end_screen import *
-from custom.filler import *
-from custom.logo import *
-from custom.opening_quote import *
-
 
 class GeneralizeToComplexFunctions(Scene):
     CONFIG = {
@@ -53,12 +33,7 @@ class GeneralizeToComplexFunctions(Scene):
         axes = Axes(**self.axes_config)
         axes.shift(2 * LEFT - axes.c2p(0, 0))
         y_axis = axes.y_axis
-<<<<<<< HEAD
-        y_labels = y_axis.add_numbers(x_values=None, excluding=None
-                                      )
-=======
         y_labels = y_axis.add_numbers(x_values=None, excluding=None)
->>>>>>> 5da66a39f5ac8e0908b760ffcd2b0f88837458de
 
         t_tracker = ValueTracker(0)
         t_tracker.add_updater(lambda t, dt: t.increment_value(dt))
@@ -267,11 +242,7 @@ class GeneralizeToComplexFunctions(Scene):
     #
     def get_complex_plane(self):
         plane = ComplexPlane(**self.complex_plane_config)
-<<<<<<< HEAD
-        plane.add_coordinate_labels()
-=======
-        #plane.add_coordinates()
->>>>>>> 5da66a39f5ac8e0908b760ffcd2b0f88837458de
+        plane.add_coordinates()
 
         plane.label = TexText("Complex plane")
         plane.label.scale(1.5)

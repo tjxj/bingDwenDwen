@@ -1,4 +1,5 @@
-from manimlib import *
+from manimlib.imports import *
+
 #     _    _         _                  _
 #    / \  | |__  ___| |_ _ __ __ _  ___| |_
 #   / _ \ | '_ \/ __| __| '__/ _` |/ __| __|
@@ -40,8 +41,8 @@ class FourierCirclesScene(ZoomedScene):
         "drawn_path_stroke_width": 2,
         "interpolate_config": [0, 1],
         # Zoom config
-        "include_zoom_camera": True,
-        "scale_zoom_camera_to_full_screen": True,
+        "include_zoom_camera": False,
+        "scale_zoom_camera_to_full_screen": False,
         "scale_zoom_camera_to_full_screen_at": 4,
         "zoom_factor": 0.3,
         "zoomed_display_height": 3,
@@ -171,7 +172,7 @@ class FourierCirclesScene(ZoomedScene):
         freqs = [v.freq for v in vectors]
         center = vectors[0].get_start()
 
-        path = ParametricCurve(
+        path = ParametricFunction(
             lambda t: center + reduce(op.add, [
                 complex_to_R3(
                     coef * np.exp(TAU * 1j * freq * t)
@@ -204,8 +205,7 @@ class FourierCirclesScene(ZoomedScene):
                 if b < 0:
                     width = 0
                 else:
-                    width = stroke_width * \
-                        interpolate(start, end, (1 - (b % 1)))
+                    width = stroke_width * interpolate(start, end, (1 - (b % 1)))
                 sp.set_stroke(width=width)
             path.curr_time += dt
             return path
@@ -221,7 +221,7 @@ class FourierCirclesScene(ZoomedScene):
                              n_copies=2,
                              right_shift_rate=5):
         path = self.get_vector_sum_path(vectors)
-        wave = ParametricCurve(
+        wave = ParametricFunction(
             lambda t: op.add(
                 right_shift_rate * t * LEFT,
                 path.function(t)[1] * UP
@@ -287,10 +287,9 @@ class FourierCirclesScene(ZoomedScene):
 
     def zoom_config(self):
         # This is not in the original version of the code.
-        self.activate_zooming(animate=True)
+        self.activate_zooming(animate=False)
         self.zoom_position(self.zoomed_display)
-        self.zoomed_camera.frame.add_updater(
-            lambda mob: mob.move_to(self.vectors[-1].get_end()))
+        self.zoomed_camera.frame.add_updater(lambda mob: mob.move_to(self.vectors[-1].get_end()))
 
     def scale_zoom_camera_to_full_screen_config(self):
         # This is not in the original version of the code.
@@ -324,8 +323,7 @@ class FourierCirclesScene(ZoomedScene):
             mob.start_time += fix_update(mob, dt, velocity_factor, fps)
             if mob.start_time <= run_time:
                 alpha = mob.start_time / run_time
-                alpha_func = self.zoom_camera_to_full_screen_config["func"](
-                    alpha)
+                alpha_func = self.zoom_camera_to_full_screen_config["func"](alpha)
                 coord = line.point_from_proportion(alpha_func)
                 mob.set_height(
                     interpolate(
@@ -365,14 +363,14 @@ class AbstractFourierOfTexSymbol(FourierCirclesScene):
         "start_drawn": True,
         "path_custom_position": lambda mob: mob,
         "max_circle_stroke_width": 1,
-        "tex_class": Tex,
+        "tex_class": TexMobject,
         "tex_config": {
             "fill_opacity": 0,
             "stroke_width": 1,
             "stroke_color": WHITE
         },
-        "include_zoom_camera": True,
-        "scale_zoom_camera_to_full_screen": True,
+        "include_zoom_camera": False,
+        "scale_zoom_camera_to_full_screen": False,
         "scale_zoom_camera_to_full_screen_at": 1,
         "zoom_position": lambda mob: mob.scale(0.8).move_to(ORIGIN).to_edge(RIGHT)
     }
@@ -393,7 +391,7 @@ class AbstractFourierOfTexSymbol(FourierCirclesScene):
         if self.n_cycles != None:
             if not self.scale_zoom_camera_to_full_screen:
                 for n in range(self.n_cycles):
-                    self.run_one_cycle()
+                   self.run_one_cycle()
             else:
                 cycle = 1 / self.slow_factor
                 total_time = cycle * self.n_cycles
@@ -466,11 +464,12 @@ class AbstractFourierFromSVG(AbstractFourierOfTexSymbol):
         return path
 
 
+
 class FourierOfPaths(AbstractFourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 100,
         "name_color": WHITE,
-        "tex_class": Tex,
+        "tex_class": TexMobject,
         "tex": None,
         "file_name": None,
         "tex_config": {
@@ -482,8 +481,8 @@ class FourierOfPaths(AbstractFourierOfTexSymbol):
         "time_per_symbol": 5,
         "slow_factor": 1 / 5,
         "parametric_function_step_size": 0.01,
-        "include_zoom_camera": True,
-        "scale_zoom_camera_to_full_screen": True,
+        "include_zoom_camera": False,
+        "scale_zoom_camera_to_full_screen": False,
     }
 
     def construct(self):
@@ -562,13 +561,13 @@ class FourierOfPaths(AbstractFourierOfTexSymbol):
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-# Using Tex or TexText
+# Using TexMobject or TextMobject
 class FourierOfTexSymbol(AbstractFourierOfTexSymbol):
     CONFIG = {
         # if start_draw = True the path start to draw
         "start_drawn": True,
         # Tex config
-        "tex_class": Tex,
+        "tex_class": TexMobject,
         "tex": r"\Sigma",
         "tex_config": {
             "fill_opacity": 0,
@@ -612,87 +611,75 @@ class FourierOfTexSymbol(AbstractFourierOfTexSymbol):
 
 # Tex examples -------------------------------------------
 # n_vectors
-
-
 class Tsymbol20vectors(FourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 20,
-        "run_time": 10,  # 10 seconds
-        "tex_class": TexText,
+        "run_time": 10, # 10 seconds
+        "tex_class": TextMobject,
         "tex": "T"
     }
-
 
 class Tsymbol50vectors(FourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 50,
-        "run_time": 10,  # 10 seconds
-        "tex_class": TexText,
+        "run_time": 10, # 10 seconds
+        "tex_class": TextMobject,
         "tex": "T"
     }
-
 
 class Tsymbol150vectors(FourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 150,
-        "run_time": 10,  # 10 seconds
-        "tex_class": TexText,
+        "run_time": 10, # 10 seconds
+        "tex_class": TextMobject,
         "tex": "T"
     }
-
 
 class SigmaSymbol150vectors(FourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 150,
-        "run_time": 10,  # 10 seconds
-        "tex_class": Tex,  # <-------- Default
+        "run_time": 10, # 10 seconds
+        "tex_class": TexMobject, # <-------- Default
         "tex": "\\Sigma"
     }
 
 # slow_factor
-
-
 class SlowFactor0_1(FourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 30,
         "run_time": 7,
-        "tex_class": Tex,
+        "tex_class": TexMobject,
         "tex": "\\Sigma",
-        "slow_factor": 0.1,  # <------------------ Default
+        "slow_factor": 0.1, # <------------------ Default
     }
-
 
 class SlowFactor0_3(FourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 30,
         "run_time": 7,
-        "tex_class": Tex,
+        "tex_class": TexMobject,
         "tex": "\\Sigma",
-        "slow_factor": 0.3,  # <------------------
+        "slow_factor": 0.3, # <------------------
     }
-
 
 class SlowFactor0_5(FourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 30,
         "run_time": 7,
-        "tex_class": Tex,
+        "tex_class": TexMobject,
         "tex": "\\Sigma",
-        "slow_factor": 0.5,  # <------------------
+        "slow_factor": 0.5, # <------------------
     }
 
 # start_drawn
-
-
 class StartDrawTrue(FourierOfTexSymbol):
     CONFIG = {
         "slow_factor": 0.05,
         "n_vectors": 30,
         "run_time": 15,
         "tex": "\\tau",
-        "start_drawn": True  # <------------------ Default
+        "start_drawn": True # <------------------ Default
     }
-
 
 class StartDrawFalse(FourierOfTexSymbol):
     CONFIG = {
@@ -700,21 +687,18 @@ class StartDrawFalse(FourierOfTexSymbol):
         "n_vectors": 30,
         "run_time": 15,
         "tex": "\\tau",
-        "start_drawn": False  # <------------------
+        "start_drawn": False # <------------------
     }
 
 # interpolate_config
-
-
 class InterpolateConfig0to1(FourierOfTexSymbol):
     CONFIG = {
         "slow_factor": 0.05,
         "n_vectors": 30,
         "run_time": 15,
         "tex": "\\tau",
-        "interpolate_config": [0, 1]  # <---------- Default
+        "interpolate_config": [0, 1] # <---------- Default
     }
-
 
 class InterpolateConfig0_3to_1(FourierOfTexSymbol):
     CONFIG = {
@@ -722,9 +706,8 @@ class InterpolateConfig0_3to_1(FourierOfTexSymbol):
         "n_vectors": 30,
         "run_time": 15,
         "tex": "\\tau",
-        "interpolate_config": [0.3, 1]  # <----------
+        "interpolate_config": [0.3, 1] # <---------- 
     }
-
 
 class InterpolateConfig1_to_1(FourierOfTexSymbol):
     CONFIG = {
@@ -732,12 +715,10 @@ class InterpolateConfig1_to_1(FourierOfTexSymbol):
         "n_vectors": 30,
         "run_time": 15,
         "tex": "\\tau",
-        "interpolate_config": [1, 1]  # <---------- # always write
+        "interpolate_config": [1, 1] # <---------- # always write
     }
 
 # n_cycles vs run_time
-
-
 class NCyclesVsRunTime(FourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 30,
@@ -746,8 +727,6 @@ class NCyclesVsRunTime(FourierOfTexSymbol):
     }
 
 # wait_before_start
-
-
 class WaitBeforeStart(FourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 30,
@@ -757,8 +736,6 @@ class WaitBeforeStart(FourierOfTexSymbol):
     }
 
 # center_point
-
-
 class CenterPoint(FourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 30,
@@ -768,8 +745,6 @@ class CenterPoint(FourierOfTexSymbol):
     }
 
 # path_custom_position
-
-
 class CustomPosition(FourierOfTexSymbol):
     CONFIG = {
         "n_vectors": 30,
@@ -784,8 +759,6 @@ class CustomPosition(FourierOfTexSymbol):
 
 # o x o x o x o x o x o x o x o x o x o x o x o x o x o x o x o x o x o x o x o x
 # SVG
-
-
 class FourierFromSVG(AbstractFourierFromSVG):
     CONFIG = {
         # if start_draw = True the path start to draw
@@ -834,26 +807,24 @@ class FourierFromSVG(AbstractFourierFromSVG):
     }
 
 # file_name
-
-
 class SVGDefault(FourierFromSVG):
     CONFIG = {
         "n_vectors": 100,
         "n_cycles": 1,
-        "file_name": "c_clef",  # in assets/svg_images/c_clef.svg
+        "file_name": "c_clef", # in assets/svg_images/c_clef.svg
     }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-# __        ___ _   _
-# \ \      / (_) |_| |__
-#  \ \ /\ / /| | __| '_ \
-#   \ V  V / | | |_| | | |
-#    \_/\_/  |_|\__|_| |_|
-#  _____                              _
-# |__  /___   ___  _ __ ___   ___  __| |   ___ __ _ _ __ ___   ___ _ __ __ _
+# __        ___ _   _      
+# \ \      / (_) |_| |__   
+#  \ \ /\ / /| | __| '_ \  
+#   \ V  V / | | |_| | | | 
+#    \_/\_/  |_|\__|_| |_| 
+#  _____                              _                                      
+# |__  /___   ___  _ __ ___   ___  __| |   ___ __ _ _ __ ___   ___ _ __ __ _ 
 #   / // _ \ / _ \| '_ ` _ \ / _ \/ _` |  / __/ _` | '_ ` _ \ / _ \ '__/ _` |
 #  / /| (_) | (_) | | | | | |  __/ (_| | | (_| (_| | | | | | |  __/ | | (_| |
 # /____\___/ \___/|_| |_| |_|\___|\__,_|  \___\__,_|_| |_| |_|\___|_|  \__,_|
@@ -864,8 +835,6 @@ class SVGDefault(FourierFromSVG):
 #          ----------------
 
 # How activate it
-
-
 class ZoomedActivate(FourierFromSVG):
     CONFIG = {
         "slow_factor": 0.05,
@@ -879,8 +848,6 @@ class ZoomedActivate(FourierFromSVG):
 # Zoomed camera: Moving camera
 # Zoomed display: Static camera
 # More info: https://github.com/Elteoremadebeethoven/AnimationsWithManim/blob/master/English/extra/faqs/faqs.md#zoomed-scene-example
-
-
 class ZoomedConfig(FourierFromSVG):
     CONFIG = {
         "slow_factor": 0.05,
@@ -908,8 +875,6 @@ class ZoomedConfig(FourierFromSVG):
     }
 
 # Move Zoomed display to full screen
-
-
 class ZoomedDisplayToFullScreen(FourierOfTexSymbol):
     CONFIG = {
         "slow_factor": 0.05,
@@ -921,14 +886,13 @@ class ZoomedDisplayToFullScreen(FourierOfTexSymbol):
         "zoom_position": lambda zc: zc.to_corner(DR),
         # Zoomed display to Full screen config
         "scale_zoom_camera_to_full_screen": True,
-        "scale_zoom_camera_to_full_screen_at": 4,  # Move the camera at 4 seconds
+        "scale_zoom_camera_to_full_screen_at": 4, # Move the camera at 4 seconds
         "zoom_camera_to_full_screen_config": {
             "run_time": 3,
             "func": smooth,
             "velocity_factor": 1
         },
     }
-
 
 class ZoomedDisplayToFullScreenWithRestore(ZoomedDisplayToFullScreen):
     CONFIG = {
@@ -957,7 +921,7 @@ class ZoomedDisplayToFullScreenWithRestore(ZoomedDisplayToFullScreen):
 class FourierOfPathsTB(FourierOfPaths):
     CONFIG = {
         "n_vectors": 100,
-        "tex_class": TexText,
+        "tex_class": TextMobject,
         "tex": "TB",
         "tex_config": {
             "stroke_color": RED,
@@ -972,34 +936,30 @@ class FourierOfPathsTB(FourierOfPaths):
 class FourierOfPathsSVG(FourierOfPaths):
     CONFIG = {
         "n_vectors": 100,
-        "file_name": r"F:\bingDwenDwen\assets\svg_images\Bing.svg",
+        "file_name": "music_symbols",
         "svg_config": {
             "stroke_color": RED,
         },
         "time_per_symbol": 5,
         "slow_factor": 1 / 5,
-        "run_time": 16,
-        "scale_zoom_camera_to_full_screen": True,
-        "scale_zoom_camera_to_full_screen_at": 4,  # Move the camera at 4 seconds
     }
 
 # //////////////////////////////////////////////////////////////////////////////////////////
 # //////////////////////////////////////////////////////////////////////////////////////////
 # //////////////////////////////////////////////////////////////////////////////////////////
 
-#   ____          _
-#  / ___|   _ ___| |_ ___  _ __ ___
-# | |  | | | / __| __/ _ \| '_ ` _ \
+#   ____          _                  
+#  / ___|   _ ___| |_ ___  _ __ ___  
+# | |  | | | / __| __/ _ \| '_ ` _ \ 
 # | |__| |_| \__ \ || (_) | | | | | |
 #  \____\__,_|___/\__\___/|_| |_| |_|
-
-#     _          _                 _   _
-#    / \   _ __ (_)_ __ ___   __ _| |_(_) ___  _ __  ___
+                                   
+#     _          _                 _   _                 
+#    / \   _ __ (_)_ __ ___   __ _| |_(_) ___  _ __  ___ 
 #   / _ \ | '_ \| | '_ ` _ \ / _` | __| |/ _ \| '_ \/ __|
 #  / ___ \| | | | | | | | | | (_| | |_| | (_) | | | \__ \
 # /_/   \_\_| |_|_|_| |_| |_|\__,_|\__|_|\___/|_| |_|___/
 # x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-
-
 
 class CustomAnimationExample(FourierCirclesScene):
     CONFIG = {
@@ -1016,16 +976,15 @@ class CustomAnimationExample(FourierCirclesScene):
             "stroke_opacity": 0.3,
         },
     }
-
     def construct(self):
-        t_symbol = TexText("T", **self.fourier_symbol_config)
+        t_symbol = TextMobject("T", **self.fourier_symbol_config)
         c_clef_symbol = SVGMobject("c_clef", **self.fourier_symbol_config)
         c_clef_symbol.match_height(t_symbol)
         # set gradient
-        for mob in [t_symbol, c_clef_symbol]:
-            mob.set_sheen(0, UP)
-            mob.set_color(color=[BLACK, GRAY, WHITE])
-        group = VGroup(t_symbol, c_clef_symbol).arrange(RIGHT, buff=0.1)
+        for mob in [t_symbol,c_clef_symbol]:
+            mob.set_sheen(0,UP)
+            mob.set_color(color=[BLACK,GRAY,WHITE])
+        group = VGroup(t_symbol,c_clef_symbol).arrange(RIGHT,buff=0.1)
         # set paths
         path1 = t_symbol.family_members_with_points()[0]
         path2 = c_clef_symbol.family_members_with_points()[0]
@@ -1038,13 +997,13 @@ class CustomAnimationExample(FourierCirclesScene):
         coefs2 = self.get_coefficients_of_path(path2)
         vectors2 = self.get_rotating_vectors(coefficients=coefs2)
         circles2 = self.get_circles(vectors2)
-        drawn_path2 = self.get_drawn_path(vectors2)
+        drawn_path2= self.get_drawn_path(vectors2)
         # text definition
-        text = TexText("Thanks for watch!")
+        text = TextMobject("Thanks for watch!")
         text.scale(1.5)
-        text.next_to(group, DOWN)
+        text.next_to(group,DOWN)
         # all elements toget
-        all_mobs = VGroup(group, text)
+        all_mobs = VGroup(group,text)
         # set mobs to remove
         vectors1_to_fade = vectors1.copy()
         circles1_to_fade = circles1.copy()
@@ -1085,11 +1044,11 @@ class CustomAnimationExample(FourierCirclesScene):
         self.add_vector_clock()
 
         # wait one cycle
-        self.wait(1 / self.slow_factor)
-        self.bring_to_back(t_symbol, c_clef_symbol)
+        self.wait( 1 / self.slow_factor)
+        self.bring_to_back(t_symbol,c_clef_symbol)
         self.play(
-            t_symbol.set_fill, None, 1,
-            c_clef_symbol.set_fill, None, 1,
+            t_symbol.set_fill,None,1,
+            c_clef_symbol.set_fill,None,1,
             run_time=3
         )
         self.wait()
@@ -1103,7 +1062,3 @@ class CustomAnimationExample(FourierCirclesScene):
             Write(text)
         )
         self.wait(10)
-
-# x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-
-# x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-
-# x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-

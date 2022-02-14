@@ -972,7 +972,7 @@ class FourierOfPathsTB(FourierOfPaths):
 class FourierOfPathsSVG(FourierOfPaths):
     CONFIG = {
         "n_vectors": 100,
-        "file_name": r"F:\bingDwenDwen\assets\svg_images\Bing.svg",
+        "file_name": "/Users/huhaiyang/projs/manimLearningMap/manim/assets/svg_images/BatmanLogo.svg",
         "svg_config": {
             "stroke_color": RED,
         },

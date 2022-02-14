@@ -1,5 +1,4 @@
 from manimlib import *
-
 #     _    _         _                  _
 #    / \  | |__  ___| |_ _ __ __ _  ___| |_
 #   / _ \ | '_ \/ __| __| '__/ _` |/ __| __|
@@ -13,7 +12,7 @@ from manimlib import *
 ########################################################################################
 
 
-class FourierCirclesScene(CameraFrame):
+class FourierCirclesScene(ZoomedScene):
     CONFIG = {
         "n_vectors": 10,
         "big_radius": 2,
@@ -41,8 +40,8 @@ class FourierCirclesScene(CameraFrame):
         "drawn_path_stroke_width": 2,
         "interpolate_config": [0, 1],
         # Zoom config
-        "include_zoom_camera": False,
-        "scale_zoom_camera_to_full_screen": False,
+        "include_zoom_camera": True,
+        "scale_zoom_camera_to_full_screen": True,
         "scale_zoom_camera_to_full_screen_at": 4,
         "zoom_factor": 0.3,
         "zoomed_display_height": 3,
@@ -62,7 +61,7 @@ class FourierCirclesScene(CameraFrame):
     }
 
     def setup(self):
-        CameraFrame.setup(self)
+        ZoomedScene.setup(self)
         self.slow_factor_tracker = ValueTracker(
             self.slow_factor
         )
@@ -222,7 +221,7 @@ class FourierCirclesScene(CameraFrame):
                              n_copies=2,
                              right_shift_rate=5):
         path = self.get_vector_sum_path(vectors)
-        wave = ParametricFunction(
+        wave = ParametricCurve(
             lambda t: op.add(
                 right_shift_rate * t * LEFT,
                 path.function(t)[1] * UP
@@ -288,7 +287,7 @@ class FourierCirclesScene(CameraFrame):
 
     def zoom_config(self):
         # This is not in the original version of the code.
-        self.activate_zooming(animate=False)
+        self.activate_zooming(animate=True)
         self.zoom_position(self.zoomed_display)
         self.zoomed_camera.frame.add_updater(
             lambda mob: mob.move_to(self.vectors[-1].get_end()))
@@ -372,8 +371,8 @@ class AbstractFourierOfTexSymbol(FourierCirclesScene):
             "stroke_width": 1,
             "stroke_color": WHITE
         },
-        "include_zoom_camera": False,
-        "scale_zoom_camera_to_full_screen": False,
+        "include_zoom_camera": True,
+        "scale_zoom_camera_to_full_screen": True,
         "scale_zoom_camera_to_full_screen_at": 1,
         "zoom_position": lambda mob: mob.scale(0.8).move_to(ORIGIN).to_edge(RIGHT)
     }
@@ -483,8 +482,8 @@ class FourierOfPaths(AbstractFourierOfTexSymbol):
         "time_per_symbol": 5,
         "slow_factor": 1 / 5,
         "parametric_function_step_size": 0.01,
-        "include_zoom_camera": False,
-        "scale_zoom_camera_to_full_screen": False,
+        "include_zoom_camera": True,
+        "scale_zoom_camera_to_full_screen": True,
     }
 
     def construct(self):
@@ -973,12 +972,15 @@ class FourierOfPathsTB(FourierOfPaths):
 class FourierOfPathsSVG(FourierOfPaths):
     CONFIG = {
         "n_vectors": 100,
-        "file_name": "music_symbols",
+        "file_name": "/Users/huhaiyang/projs/manimLearningMap/manim/assets/svg_images/BatmanLogo.svg",
         "svg_config": {
             "stroke_color": RED,
         },
         "time_per_symbol": 5,
         "slow_factor": 1 / 5,
+        "run_time": 16,
+        "scale_zoom_camera_to_full_screen": True,
+        "scale_zoom_camera_to_full_screen_at": 4,  # Move the camera at 4 seconds
     }
 
 # //////////////////////////////////////////////////////////////////////////////////////////
@@ -1101,3 +1103,7 @@ class CustomAnimationExample(FourierCirclesScene):
             Write(text)
         )
         self.wait(10)
+
+# x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-
+# x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-
+# x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-

@@ -945,6 +945,5 @@ class FourierOctocat(FourierOfTrebleClef):
     }
 
     def get_shape(self):
-        shape = SVGMobject(
-            "/Users/huhaiyang/projs/bingDwenDwen/assets/svg_images/Bing.svg")
+        shape = SVGMobject(/Users/huhaiyang/projs/bingDwenDwen/assets/svg_images/BingDwenDwen.svg/Users/huhaiyang/projs/bingDwenDwen/assets/svg_images/Bing.svg")
         return shape

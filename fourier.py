@@ -1,7 +1,10 @@
 from manimlib import *
+import os,sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from bingDwenDwen.funcs.zoomed_scene import ZoomedScene
 
 
-class FourierCirclesScene(Scene):
+class FourierCirclesScene(ZoomedScene):
     CONFIG = {
         "n_vectors": 10,
         "big_radius": 2,
@@ -29,8 +32,8 @@ class FourierCirclesScene(Scene):
         "drawn_path_stroke_width": 2,
         "interpolate_config": [0, 1],
         # Zoom config
-        "include_zoom_camera": False,
-        "scale_zoom_camera_to_full_screen": False,
+        "include_zoom_camera": True,
+        "scale_zoom_camera_to_full_screen": True,
         "scale_zoom_camera_to_full_screen_at": 4,
         "zoom_factor": 0.3,
         "zoomed_display_height": 3,
@@ -50,6 +53,7 @@ class FourierCirclesScene(Scene):
     }
 
     def setup(self):
+        ZoomedScene.setup(self)
         self.slow_factor_tracker = ValueTracker(
             self.slow_factor
         )
@@ -359,8 +363,8 @@ class AbstractFourierOfTexSymbol(FourierCirclesScene):
             "stroke_width": 1,
             "stroke_color": WHITE
         },
-        "include_zoom_camera": False,
-        "scale_zoom_camera_to_full_screen": False,
+        "include_zoom_camera": True,
+        "scale_zoom_camera_to_full_screen": True,
         "scale_zoom_camera_to_full_screen_at": 1,
         "zoom_position": lambda mob: mob.scale(0.8).move_to(ORIGIN).to_edge(RIGHT)
     }
@@ -470,8 +474,8 @@ class FourierOfPaths(AbstractFourierOfTexSymbol):
         "time_per_symbol": 5,
         "slow_factor": 1 / 5,
         "parametric_function_step_size": 0.01,
-        "include_zoom_camera": False,
-        "scale_zoom_camera_to_full_screen": False,
+        "include_zoom_camera": True,
+        "scale_zoom_camera_to_full_screen": True,
     }
 
     def construct(self):
@@ -779,7 +783,7 @@ class FourierFromSVG(AbstractFourierFromSVG):
         # if start_draw = True the path start to draw
         "start_drawn": True,
         # SVG file name
-        "file_name": None,
+        "file_name": "/Users/huhaiyang/projs/bingDwenDwen/svg_images/Bing.svg",
         "svg_config": {
             "fill_opacity": 0,
             "stroke_color": WHITE,
@@ -859,7 +863,7 @@ class ZoomedActivate(FourierFromSVG):
         "slow_factor": 0.05,
         "n_vectors": 50,
         "n_cycles": 1,
-        "file_name": "c_clef",
+        "file_name": "/Users/huhaiyang/projs/bingDwenDwen/svg_images/Bing.svg",
         "include_zoom_camera": True,
         "zoom_position": lambda zc: zc.to_corner(DR)
     }
@@ -874,7 +878,7 @@ class ZoomedConfig(FourierFromSVG):
         "slow_factor": 0.05,
         "n_vectors": 150,
         "n_cycles": 1,
-        "file_name": "c_clef",
+        "file_name": "/Users/huhaiyang/projs/bingDwenDwen/svg_images/Bing.svg",
         "path_custom_position": lambda path: path.shift(LEFT*2),
         "center_point": LEFT*2,
         "circle_config": {
@@ -960,7 +964,7 @@ class FourierOfPathsTB(FourierOfPaths):
 class FourierOfPathsSVG(FourierOfPaths):
     CONFIG = {
         "n_vectors": 100,
-        "file_name": "music_symbols",
+        "file_name": "/Users/huhaiyang/projs/bingDwenDwen/svg_images/Bing.svg",
         "svg_config": {
             "stroke_color": RED,
         },

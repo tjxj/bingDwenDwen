@@ -12,7 +12,7 @@ from manimlib import *
 ########################################################################################
 
 
-class FourierCirclesScene(Scene):
+class FourierCirclesScene(ZoomedScene):
     CONFIG = {
         "n_vectors": 10,
         "big_radius": 2,
@@ -61,7 +61,7 @@ class FourierCirclesScene(Scene):
     }
 
     def setup(self):
-        Scene.setup(self)
+        ZoomedScene.setup(self)
         self.slow_factor_tracker = ValueTracker(
             self.slow_factor
         )
